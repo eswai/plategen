@@ -21,6 +21,57 @@
             </div>
           </div>
 
+
+          <div class="columns">
+
+            <div class="column">
+              <label class="label">Key cutout width</label>
+              <div class="field has-addons">
+                <p class="control">
+                  <input class="input" type="number" v-model="keywidth" >
+                </p>
+                <p class="control">
+                  <a class="button is-static">
+                    mm
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            <div class="column">
+              <label class="label">Cutout fillet</label>
+              <div class="field has-addons">
+                <p class="control">
+                  <input class="input" type="number" v-model="keyfillet" >
+                </p>
+                <p class="control">
+                  <a class="button is-static">
+                    mm
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            <div class="column">
+              <label class="label">Key spacing</label>
+              <div class="field has-addons">
+                <p class="control">
+                  <input class="input" type="number" v-model="keyspace" >
+                </p>
+                <p class="control">
+                  <a class="button is-static">
+                    mm
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            <div class="column"></div>
+            <div class="column"></div>
+            <div class="column"></div>
+
+          </div>
+
           <div class="field is-grouped">
             <div class="control">
               <button v-on:click="renderKB" class="button is-dark">Preview</button>
@@ -36,14 +87,13 @@
         </div>
       </section>
 
-            <div class="container">
-              <div class="content">
-                <ul type="1">
-                  <li>スタビライザーのカットアウトには対応していません。</li>
-                </ul>
-              </div>
-            </div>
-          </section>
+      <div class="container">
+        <div class="content">
+          <ul type="1">
+            <li>スタビライザーのカットアウトには対応していません。</li>
+          </ul>
+        </div>
+      </div>
 
       <footer class="footer">
         <div class="content has-text-centered">
@@ -57,10 +107,6 @@
   </body>
 
   <script type="text/javascript">
-    const keypitch = 19
-    const swwidth = 14
-    const keygap = 1
-    const radius = 0.5
     const makerjs = require('makerjs')
 
     var app = new Vue({
@@ -69,6 +115,9 @@
         rawdata: "",
         svgout: "",
         dxfout: "",
+        keyspace: 19.05,
+        keywidth: 14.0,
+        keyfillet: 0.5,
       },
 
       created: function() {
@@ -88,7 +137,7 @@
         },
 
         createSwitch: function() {
-          var s = new makerjs.models.RoundRectangle(swwidth, swwidth, radius)
+          var s = new makerjs.models.RoundRectangle(this.keywidth, this.keywidth, this.keyfillet)
           makerjs.model.center(s)
           return s
         },
@@ -109,7 +158,7 @@
             var key = kb.keys[i]
             var sw = that.createSwitch()
             makerjs.model.rotate(sw, -key.dangle() , [0, 0])
-            makerjs.model.moveRelative(sw, [key.centerX() * keypitch, -key.centerY() * keypitch])
+            makerjs.model.moveRelative(sw, [key.centerX() * this.keyspace, -key.centerY() * this.keyspace])
             plate.models[i] = sw
           }
 
