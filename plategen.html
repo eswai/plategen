@@ -150,6 +150,8 @@
           var that = this
           var kmap = []
 
+          if (that.rawdata == "") return
+
           // parse KLE data and render keyboard
           var kb = KLEparser(that.rawdata)
           var plate = { models: {}, units: makerjs.unitType.Millimeter }
