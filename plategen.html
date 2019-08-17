@@ -1,0 +1,123 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Keyboard Plate Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="js/KLEparser.js"></script>
+    <script src="http://maker.js.org/target/js/browser.maker.js" type="text/javascript"></script>
+    <script src="js/FileSaver.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <section class="section">
+        <h1 class="title">Keyboard Plate Generator</h1>
+        <div id="app">
+
+          <div class="field">
+            <label class="label">Keyboard Layout Editor Raw data</label>
+            <div class="control">
+              <textarea v-model="rawdata" placeholder="Raw data" class="textarea"></textarea>
+            </div>
+          </div>
+
+          <div class="field is-grouped">
+            <div class="control">
+              <button v-on:click="renderKB" class="button is-dark">Preview</button>
+              <button v-on:click="createSVG" class="button is-dark">SVG</button>
+              <button v-on:click="createDXF" class="button is-dark">DXF</button>
+            </div>
+          </div>
+
+          <div>
+            <span v-html="svgout"></span>
+          </div>
+
+        </div>
+      </section>
+
+            <div class="container">
+              <div class="content">
+                <ul type="1">
+                  <li>スタビライザーのカットアウトには対応していません。</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+      <footer class="footer">
+        <div class="content has-text-centered">
+          <p>
+            <strong>Keyboard Plate Generator</strong> by <a href="https://github.com/eswai/">eswai</a>.
+            The source code is licensed under the MIT license.
+          </p>
+        </div>
+      </footer>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    const keypitch = 19
+    const swwidth = 14
+    const keygap = 1
+    const radius = 0.5
+    const makerjs = require('makerjs')
+
+    var app = new Vue({
+      el: '#app',
+      data: {
+        rawdata: "",
+        svgout: "",
+        dxfout: "",
+      },
+
+      created: function() {
+      },
+
+      methods: {
+        createSVG: function() {
+          this.renderKB()
+          var svgf = new Blob([this.svgout], {type : 'image/svg+xml'})
+          saveAs(svgf, "keymap.svg")
+        },
+
+        createDXF: function() {
+          this.renderKB()
+          var dxf = new Blob([this.dxfout], {type : 'application/octet-stream'})
+          saveAs(dxf, "keymap.dxf")
+        },
+
+        createSwitch: function() {
+          var s = new makerjs.models.RoundRectangle(swwidth, swwidth, radius)
+          makerjs.model.center(s)
+          return s
+        },
+
+        createKey: function(w, h) {
+          return kc
+        },
+
+        renderKB: function() {
+          var that = this
+          var kmap = []
+
+          // parse KLE data and render keyboard
+          var kb = KLEparser(that.rawdata)
+          var plate = { models: {}, units: makerjs.unitType.Millimeter }
+
+          for (var i = 0; i < kb.keys.length; i++) {
+            var key = kb.keys[i]
+            var sw = that.createSwitch()
+            makerjs.model.rotate(sw, -key.dangle() , [0, 0])
+            makerjs.model.moveRelative(sw, [key.centerX() * keypitch, -key.centerY() * keypitch])
+            plate.models[i] = sw
+          }
+
+          makerjs.model.zero(plate)
+          that.svgout = makerjs.exporter.toSVG(plate)
+          that.dxfout = makerjs.exporter.toDXF(plate)
+        }
+      }
+    })
+  </script>
+</html>
