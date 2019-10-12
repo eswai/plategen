@@ -137,7 +137,7 @@
         },
 
         createSwitch: function() {
-          var s = new makerjs.models.RoundRectangle(this.keywidth, this.keywidth, this.keyfillet)
+          var s = new makerjs.models.RoundRectangle(parseFloat(this.keywidth), parseFloat(this.keywidth), parseFloat(this.keyfillet))
           makerjs.model.center(s)
           return s
         },
@@ -160,7 +160,7 @@
             var key = kb.keys[i]
             var sw = that.createSwitch()
             makerjs.model.rotate(sw, -key.dangle() , [0, 0])
-            makerjs.model.moveRelative(sw, [key.centerX() * this.keyspace, -key.centerY() * this.keyspace])
+            makerjs.model.moveRelative(sw, [key.centerX() * parseFloat(this.keyspace), -key.centerY() * parseFloat(this.keyspace)])
             plate.models[i] = sw
           }
 
