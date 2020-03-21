@@ -53,10 +53,10 @@
             </div>
 
             <div class="column">
-              <label class="label">Key spacing</label>
+              <label class="label">Key spacing H</label>
               <div class="field has-addons">
                 <p class="control">
-                  <input class="input" type="number" v-model="keyspace" >
+                  <input class="input" type="number" v-model="hkeyspace" >
                 </p>
                 <p class="control">
                   <a class="button is-static">
@@ -66,7 +66,20 @@
               </div>
             </div>
 
-            <div class="column"></div>
+            <div class="column">
+              <label class="label">Key spacing V</label>
+              <div class="field has-addons">
+                <p class="control">
+                  <input class="input" type="number" v-model="vkeyspace" >
+                </p>
+                <p class="control">
+                  <a class="button is-static">
+                    mm
+                  </a>
+                </p>
+              </div>
+            </div>
+
             <div class="column"></div>
             <div class="column"></div>
 
@@ -115,7 +128,8 @@
         rawdata: "",
         svgout: "",
         dxfout: "",
-        keyspace: 19.05,
+        hkeyspace: 19.05,
+        vkeyspace: 19.05,
         keywidth: 14.0,
         keyfillet: 0.5,
       },
@@ -160,7 +174,7 @@
             var key = kb.keys[i]
             var sw = that.createSwitch()
             makerjs.model.rotate(sw, -key.dangle() , [0, 0])
-            makerjs.model.moveRelative(sw, [key.centerX() * parseFloat(this.keyspace), -key.centerY() * parseFloat(this.keyspace)])
+            makerjs.model.moveRelative(sw, [key.centerX() * parseFloat(this.hkeyspace), -key.centerY() * parseFloat(this.vkeyspace)])
             plate.models[i] = sw
           }
 
